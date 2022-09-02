@@ -2,7 +2,7 @@ import math
 
 _DEFAULT_MAX_WIDTH = 80
 
-def add_border(string, max_width=None, fit=False, box_chars="│┐└┘┌─", bold=False) -> str:
+def add_border(string, max_width=None, fit=False, box_chars="│┐└┘┌─", bold=False):
   """Draw a border around a string
 
   Parameters:

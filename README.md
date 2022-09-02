@@ -1,21 +1,39 @@
 # textchart
-A few simple python tools for making text-only charts
+
+Dead-simple tools for generating pure-text bargraphs and scatterplots
 
 ## Usage
 
+
+
+### Utility Objects
+
+FORMATTERS
+  - `FORMATTER.num`: round to the nearest .1
+  - `FORMATTER.round`: round to the nearest integer
+
+SCALE FUNCTIONS
+  - `SCALE_FN.linear`: linear scale axis
+  - `SCALE_FN.log`: log scale axis
+
+SORTING FUNCTIONS
+  - `SORTER.default`: keeps order from iterating through label_value_pairs
+  - `SORTER.identity`: default python sorting
+  - `SORTER.alphabetical`: sort alphabetically
+  - `SORTER.lookup_list(l)`: creates a sort function that preserves the order in list `l`
 
 
 ## API
 
 ### Functions
 #### __add_border__
-(
+    (
     string, 
     max_width=None, 
     fit=False, 
     box_chars='│┐└┘┌─', 
     bold=False
-)
+    )
   
 __Parameters:__
   - `string`: the string
@@ -40,7 +58,7 @@ __example:__
         └───────────┘
 
 #### __bar_graph__
-(
+    (
     label_value_pairs, 
     filler_char='■', 
     sorter=SORTERS.identity, 
@@ -49,8 +67,8 @@ __example:__
     size_labels=True, 
     border=False, 
     title=''
-)
-    
+    )
+
 __Parameters:__
   - `label_value_pairs`: a list of pairs or a dict mapping labels to values
   - `filler_char`: the character to use as a filler
@@ -63,7 +81,7 @@ __Parameters:__
     - default True
     
 __example:__
-    ```
+```
     >> bar_graph({1:17, "2":3, "3 & OTHER": 1, 5: 16})
     
                 1: ■■■■■■■■■■■■■■■■■■■■■■ 17
@@ -71,29 +89,29 @@ __example:__
                 3: ■■■■■■■■■■■■■ 10
         3 & OTHER: ■ 1
                 5: ■■■■■■■■■■■■■■■■■■■■■ 16
-    ```
+```
 
 #### __scatterplot__
-(
-xy, 
-border=False
-glyphs='.x*', 
-height=15, 
-show_key=True, 
-title=None, 
-unit_block=' ', 
-width=40, 
-x_formatter=FORMATTER.num, 
-x_label='', 
-x_range=None, 
-x_scale_fn=SCALE_FN.linear, 
-x_ticks=5, 
-y_formmatter=FORMATTER.num, 
-y_label='', 
-y_range=None, 
-y_scale_fn=SCALE_FN.linear, 
-y_ticks=5, 
-)
+    (
+    xy, 
+    border=False
+    glyphs='.x*', 
+    height=15, 
+    show_key=True, 
+    title=None, 
+    unit_block=' ', 
+    width=40, 
+    x_formatter=FORMATTER.num, 
+    x_label='', 
+    x_range=None, 
+    x_scale_fn=SCALE_FN.linear, 
+    x_ticks=5, 
+    y_formmatter=FORMATTER.num, 
+    y_label='', 
+    y_range=None, 
+    y_scale_fn=SCALE_FN.linear, 
+    y_ticks=5, 
+    )
 
 __Parameters:__
   - `xy`: a set of xy pairs
@@ -155,22 +173,5 @@ __Example:__
         │                      number of X values                                             │
         └─────────────────────────────────────────────────────────────────────────────────────┘
 ```
-
-### Classes
-
-FORMATTERS
-  - `FORMATTER.num`: round to the nearest .1
-  - `FORMATTER.round`: round to the nearest integer
-
-SCALE FUNCTIONS
-  - `SCALE_FN.linear`: linear scale axis
-  - `SCALE_FN.log`: log scale axis
-
-SORTING FUNCTIONS
-  - `SORTER.default`: keeps order from iterating through label_value_pairs
-  - `SORTER.identity`: default python sorting
-  - `SORTER.alphabetical`: sort alphabetically
-  - `SORTER.lookup_list(l)`: creates a sort function that preserves the order in list `l`
-
 
 
