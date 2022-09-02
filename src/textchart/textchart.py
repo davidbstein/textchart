@@ -26,6 +26,8 @@ def add_border(string, max_width=None, fit=False, box_chars="│┐└┘┌─"
     box="┃┓┗┛┏━"
   if max_width is None:
     width=_DEFAULT_MAX_WIDTH
+  else:
+    width = max_width
   if fit:
     wrap_width = max([len(l) for l in string_lines]) + 1
     if max_width is not None:
@@ -59,11 +61,14 @@ def add_border(string, max_width=None, fit=False, box_chars="│┐└┘┌─"
   return '\n'.join(formatted_lines) + "\n"
 
 
-class SORTERS:
+class SORTER:
+  def default(x):
+    return 0
+
   def identity(x):
     return x
 
-  def alphbetical(x):
+  def alphabetical(x):
     return str(x)
 
   def lookup_list(l):
@@ -74,7 +79,8 @@ class SORTERS:
         return len(l)+1
 
 
-def bar_graph(label_value_pairs, filler_char='■', sorter=SORTERS.identity, max_width=40, horizontal=True,
+def bar_graph(label_value_pairs, filler_char='■', sorter=SORTER.alphabetical,
+  max_width=40, horizontal=True,
   size_labels=True, border=False, title=''):
   """Draws a bar graph
 
@@ -109,7 +115,8 @@ def bar_graph(label_value_pairs, filler_char='■', sorter=SORTERS.identity, max
   to_ret = []
   max_label_width = max(len(str(label)) for label, _ in label_value_pairs)
   max_val = max(value for _, value in label_value_pairs)
-  for label, value in label_value_pairs:
+  _sorter = lambda label, *_: sorter(label)
+  for label, value in sorted(label_value_pairs, key=_sorter):
     value_str = f" {value}" if size_labels else ""
     bar = filler_char * round((max_width/len(filler_char)*value)//max_val)
     to_ret.append(f"{label:>{max_label_width}}: {bar}{value_str}")
@@ -137,6 +144,9 @@ class SCALE_FN:
 class FORMATTER:
   def num(x):
     return f"{x:.1f}"
+
+  def int(x):
+    return f"{round(x)}"
 
 def _xy_pairs_to_2d_count_array(xy, rows, cols, row_val, col_val):
   counts = []
