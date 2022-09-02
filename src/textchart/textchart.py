@@ -74,7 +74,8 @@ class SORTERS:
         return len(l)+1
 
 
-def bar_graph(label_value_pairs, filler_char='■', sorter=SORTERS.identity, max_width=40, horizontal=True, size_labels=True):
+def bar_graph(label_value_pairs, filler_char='■', sorter=SORTERS.identity, max_width=40, horizontal=True,
+  size_labels=True, border=False, title=''):
   """Draws a bar graph
 
   Parameters:
@@ -106,13 +107,17 @@ def bar_graph(label_value_pairs, filler_char='■', sorter=SORTERS.identity, max
     label_value_pairs = list(label_value_pairs.items())
 
   to_ret = []
-  max_label_width = max(len(label) for label, _ in labels)
+  max_label_width = max(len(str(label)) for label, _ in label_value_pairs)
   max_val = max(value for _, value in label_value_pairs)
   for label, value in label_value_pairs:
-    count_str = f" {count}" if size_labels else ""
-    bar = filler_char * ((max_width/len(filler_char)*count)//max_val)
-    to_ret.append(f"{val:>{max_label_width}}: {bar}{count_str}")
-  return ''.join(to_ret)
+    value_str = f" {value}" if size_labels else ""
+    bar = filler_char * round((max_width/len(filler_char)*value)//max_val)
+    to_ret.append(f"{label:>{max_label_width}}: {bar}{value_str}")
+  if title:
+    to_ret = [f"{title:^{max(map(len,to_ret))}}", ''] + to_ret
+  if border:
+    to_ret = add_border(to_ret, fit=True)
+  return '\n'.join(to_ret)
 
 
 class SCALE_FN:
@@ -151,11 +156,12 @@ def _xy_pairs_to_2d_count_array(xy, rows, cols, row_val, col_val):
   return counts
 
 def _compute_glyph_thresholds(glyphs, count_array):
-  counts = sorted(filter(int, sum(count_array, [])))
+  counts = sorted(set(filter(int, sum(count_array, []))))
   assert counts, "no points to render"
   step_size = len(counts) / len(glyphs)
-  return tuple(counts[min(int(i*step_size), len(counts)-1)] for i in range(len(glyphs)))
-
+  thresholds = tuple(counts[min(int(i*step_size), len(counts)-1)] for i in range(len(glyphs)))
+  print(counts, len(counts), step_size, thresholds)
+  return thresholds
 
 def _render_scatter(counts, glyph_lookup, glyph_thresholds):
   to_ret = []
@@ -274,30 +280,35 @@ def scatterplot(
     show_key: self explanatory.
 
   Example:
-    ┌───────────────────────────────────────────────────────────────────────────────────────────┐
-    │                                        test title                                         │
-    │                                                                                           │
-    │                   5.5┨                                              ┌───────────────────┐ │
-    │                      ┃                                              │ "*": 1 - 3 points │ │
-    │                      ┃         *          *  *                      └───────────────────┘ │
-    │                      ┃           *    *                                                   │
-    │                   4.0┨            **  * *    * *                                          │
-    │                      ┃   * *       *** *    *   *  *                                      │
-    │     number of        ┃       *    * **** *** **           *                               │
-    │  units of Y value    ┃   *     ** ** * ***    ***  * *                                    │
-    │                   2.6┨             ***      **   *                                        │
-    │                      ┃       *   ** *** *  * *  ** *                                      │
-    │                      ┃            **  *    * **   **                                      │
-    │                      ┃            *   **      *  *                                        │
-    │                   1.1┨                      *                                             │
-    │                      ┃        *        ** *                                               │
-    │                      ┃                                                                    │
-    │                      ┃                                                                    │
-    │                   0.0╄━━━━━━┯━━━━━━━━┯━━━━━━━━┯━━━━━━━━┯━━━━━━━┯                          │
-    │                      -6.6   11.8     39.4     66.9     94.5    119.1                      │
-    │                                                                                           │
-    │                              number of X values                                           │
-    └───────────────────────────────────────────────────────────────────────────────────────────┘
+    random_tuples = [(random.normalvariate(50, 5)*random.randint(1,3), random.normalvariate(3, 1)) for _ in range(400)]
+    scatterplot(
+        random_tuples,
+        title='test title', x_label='number of X values', y_label='number of\nunits of Y value', border=True)
+
+    ┌─────────────────────────────────────────────────────────────────────────────────────────────┐
+    │                                         test title                                          │
+    │                                                                                             │
+    │                    6.7┨                                              ┌────────────────────┐ │
+    │                       ┃                                              │ ".": 1 - 3 points  │ │
+    │                       ┃         .       .                            │ "x": 4 - 6 points  │ │
+    │                       ┃          .        .      . .                 │ "*": 7 - 10 points │ │
+    │                    4.7┨         .x        . .       ... .            └────────────────────┘ │
+    │                       ┃        .x.. .    .x. .. ... .. ..                                   │
+    │     number of         ┃        .xx.     ....xx... ..........                                │
+    │  units of Y value     ┃        .**.  . ....xx......x..x...                                  │
+    │                    2.8┨        .**x  .. x.**x......xxx..   .                                │
+    │                       ┃         **x    . ..*..   x.. x xx...                                │
+    │                       ┃        ...x     ..*...    ....... . .                               │
+    │                       ┃        ....     .  . . ..  ....... ..                               │
+    │                    0.8┨         .         .  .    .    .                                    │
+    │                       ┃        . .       .  .                                               │
+    │                       ┃         .        ..          .                                      │
+    │                       ┃                                                                     │
+    │                   -0.7╄━━━━━━┯━━━━━━━━┯━━━━━━━━┯━━━━━━━━┯━━━━━━━┯                           │
+    │                       0.0    30.0     75.1     120.1    165.1   205.2                       │
+    │                                                                                             │
+    │                              number of X values                                             │
+    └─────────────────────────────────────────────────────────────────────────────────────────────┘
 
   """
 
