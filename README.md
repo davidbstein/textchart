@@ -4,7 +4,40 @@ Dead-simple tools for generating pure-text bargraphs and scatterplots
 
 ## Usage
 
-
+```
+>>> from textchart import textchart
+>>> data1 = {"bees": 5, "fish": 30, "highway": 6}
+>>> textchart.print_graph(data1)
+┌──────────────────────────────────────────────────────┐
+│    bees: ■■■■■■ 5                                    │
+│    fish: ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■ 30 │
+│ highway: ■■■■■■■■ 6                                  │
+└──────────────────────────────────────────────────────┘
+>>> data2 = [(1,3), (4,6), (4,6), (10, 5)]
+>>> textchart.print_graph(data2)
+┌──────────────────────────────────────────────────────────────────────┐
+│   6.3┨                                             ┌───────────────┐ │
+│      ┃              *                              │ "x": 1 point  │ │
+│      ┃                                             │ "*": 2 points │ │
+│      ┃                                             └───────────────┘ │
+│   4.6┨                                    x                          │
+│      ┃                                                               │
+│      ┃                                                               │
+│      ┃                                                               │
+│   2.9┨   x                                                           │
+│      ┃                                                               │
+│      ┃                                                               │
+│      ┃                                                               │
+│   1.3┨                                                               │
+│      ┃                                                               │
+│      ┃                                                               │
+│      ┃                                                               │
+│   0.0╄━━━━━━┯━━━━━━━━┯━━━━━━━━┯━━━━━━━━┯━━━━━━━┯                     │
+│      0.0    1.6      4.1      6.5      9.0     11.2                  │
+│                                                                      │
+│                                                                      │
+└──────────────────────────────────────────────────────────────────────┘
+```
 
 ### Utility Objects
 
@@ -28,13 +61,13 @@ SORTING FUNCTIONS
 ### Functions
 #### __add_border__
     (
-    string, 
-    max_width=None, 
-    fit=False, 
-    box_chars='│┐└┘┌─', 
+    string,
+    max_width=None,
+    fit=False,
+    box_chars='│┐└┘┌─',
     bold=False
     )
-  
+
 __Parameters:__
   - `string`: the string
   - `max_width`: if set, text will wrap if it exceeds a given width.
@@ -59,13 +92,13 @@ __example:__
 
 #### __bar_graph__
     (
-    label_value_pairs, 
-    filler_char='■', 
-    sorter=SORTERS.identity, 
-    max_width=40, 
-    horizontal=True, 
-    size_labels=True, 
-    border=False, 
+    label_value_pairs,
+    filler_char='■',
+    sorter=SORTERS.identity,
+    max_width=40,
+    horizontal=True,
+    size_labels=True,
+    border=False,
     title=''
     )
 
@@ -79,11 +112,11 @@ __Parameters:__
     - default True
   - `size_labels`: if true, includes the value as text at the top of each bar
     - default True
-    
+
 __example:__
 ```
     >> bar_graph({1:17, "2":3, "3 & OTHER": 1, 5: 16})
-    
+
                 1: ■■■■■■■■■■■■■■■■■■■■■■ 17
                 2: ■■■■ 3
                 3: ■■■■■■■■■■■■■ 10
@@ -93,24 +126,24 @@ __example:__
 
 #### __scatterplot__
     (
-    xy, 
+    xy,
     border=False
-    glyphs='.x*', 
-    height=15, 
-    show_key=True, 
-    title=None, 
-    unit_block=' ', 
-    width=40, 
-    x_formatter=FORMATTER.num, 
-    x_label='', 
-    x_range=None, 
-    x_scale_fn=SCALE_FN.linear, 
-    x_ticks=5, 
-    y_formmatter=FORMATTER.num, 
-    y_label='', 
-    y_range=None, 
-    y_scale_fn=SCALE_FN.linear, 
-    y_ticks=5, 
+    glyphs='.x*',
+    height=15,
+    show_key=True,
+    title=None,
+    unit_block=' ',
+    width=40,
+    x_formatter=FORMATTER.num,
+    x_label='',
+    x_range=None,
+    x_scale_fn=SCALE_FN.linear,
+    x_ticks=5,
+    y_formmatter=FORMATTER.num,
+    y_label='',
+    y_range=None,
+    y_scale_fn=SCALE_FN.linear,
+    y_ticks=5,
     )
 
 __Parameters:__
@@ -132,22 +165,22 @@ __Parameters:__
   - `x_ticks`: the number of "ticks" along the x axis
   - `y_ticks`: the number of "ticks" along the y axis
   - `show_key`: self explanatory.
-    
+
 __Example:__
 ```
     >> # generating some random data
     >> data = [
-      (random.normalvariate(50, 5)*random.randint(1,3), random.normalvariate(3, 1)) 
+      (random.normalvariate(50, 5)*random.randint(1,3), random.normalvariate(3, 1))
       for _ in range(400)
       ]
     >> # Plot command:
     >> scatterplot(
-          data, 
-          title='test title', 
-          x_label='number of X values', 
-          y_label='number of\nunits of\nY value', 
+          data,
+          title='test title',
+          x_label='number of X values',
+          y_label='number of\nunits of\nY value',
           border=True)
-    
+
         ┌─────────────────────────────────────────────────────────────────────────────────────┐
         │                                 test title                                          │
         │                                                                                     │

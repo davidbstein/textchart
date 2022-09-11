@@ -2,16 +2,21 @@ import math
 
 _DEFAULT_MAX_WIDTH = 80
 
-def draw_graph(data, **kwargs):
+def format_graph(data, **kwargs):
   if type(data) == dict:
     return bar_graph(data, **kwargs)
   if type(data) == list:
     assert all(len(d)==2 for d in data if d), "expected a list of tuples"
-    assert len(d) > 0, "expected at least one value"
-    if type(d[0]) == str:
+    assert len(data) > 0, "expected at least one value"
+    if type(data[0]) == str:
       return bar_graph(data, **kwargs)
     else:
       return scatterplot(data, **kwargs)
+
+def print_graph(data, border=True, **kwargs):
+  kwargs['border'] = border
+  print(format_graph(data, **kwargs))
+
 
 def add_border(string, max_width=None, fit=False, box_chars="│┐└┘┌─", bold=False):
   """Draw a border around a string
@@ -181,7 +186,6 @@ def _compute_glyph_thresholds(glyphs, count_array):
   assert counts, "no points to render"
   step_size = len(counts) / len(glyphs)
   thresholds = tuple(counts[min(int(i*step_size), len(counts)-1)] for i in range(len(glyphs)))
-  print(counts, len(counts), step_size, thresholds)
   return thresholds
 
 def _render_scatter(counts, glyph_lookup, glyph_thresholds):
